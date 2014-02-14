@@ -34,6 +34,8 @@ def checkForName(username, network):
 		url = "https://www.twitter.com/" + username
 	elif network == 'github':
 		url = "https://www.github.com/" + username
+	elif network == 'facebook':
+		url = "https://www.facebook.com/" + username
 	else:
 		url = ''
 		# exit with error "Please enter a network!"
