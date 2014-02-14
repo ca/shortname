@@ -9,6 +9,7 @@ from itertools import product
 from string import ascii_lowercase
 
 x = 2 # here's where you want that user input or the flags or something
+numbers = [''.join(i) for i in product(['1','2','3','4','5','6','7','8','9','0'], repeat = x)]
 keywords = [''.join(i) for i in product(ascii_lowercase, repeat = x)]
 
 class bcolors:
@@ -38,7 +39,7 @@ def checkForName(username, network):
 		url = "https://www.facebook.com/" + username
 	else:
 		url = ''
-		# exit with error "Please enter a network!"
+		# exit with error "Please enter a supported network!"
 
 	try:
 	    r = requests.get(url)
@@ -49,11 +50,11 @@ def checkForName(username, network):
 	    print bcolors.FAIL + 'Not available.' + bcolors.ENDC
 
 def iterateNames(network):
-	for i in keywords:
+	for i in numbers:
 		checkForName(i, network)
 	time = random.randint(1,100000)
 	# threading.Timer(time, threeLetterCombos).start()
 
 # execute on -3 or some other ones on flags
-iterateNames('github')
+iterateNames('twitter')
 # ask for input of a username
