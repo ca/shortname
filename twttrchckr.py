@@ -25,9 +25,16 @@ class bcolors:
         self.FAIL = ''
         self.ENDC = ''
 
-def checkTwitter(username):
-	print "checking for username: " + bcolors.OKBLUE + username + bcolors.ENDC + "..."
-	url = "https://www.twitter.com/" + username
+def checkForName(username, network):
+	print "checking " + bcolors.WARNING + network + bcolors.ENDC + " for username: " + bcolors.OKBLUE + username + bcolors.ENDC + "..."
+
+	if network == 'twitter':
+		url = "https://www.twitter.com/" + username
+	else if network == 'github':
+		url = "https://www.github.com/" + username
+	else:
+		url = ''
+		# exit with error "Please enter a network!"
 
 	try:
 	    r = requests.get(url)
@@ -37,8 +44,12 @@ def checkTwitter(username):
 	else:
 	    print bcolors.FAIL + 'Not available.' + bcolors.ENDC
 
-def threeLetterCombos():
+def threeLetterCombos(network):
 	for i in keywords:
-		checkTwitter(i)
+		checkForName(i, network)
 	time = random.randint(1,100000)
 	threading.Timer(time, threeLetterCombos).start()
+
+# execute on -3 or some other ones on flags
+threeLetterCombos('github')
+# ask for input of a username
