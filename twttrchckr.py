@@ -1,4 +1,5 @@
 #coding=utf-8
+import timeit
 import threading
 import random
 import urllib2
@@ -51,5 +52,5 @@ def threeLetterCombos(network):
 	threading.Timer(time, threeLetterCombos).start()
 
 # execute on -3 or some other ones on flags
-threeLetterCombos('github')
+timeit(threeLetterCombos('github'))
 # ask for input of a username
