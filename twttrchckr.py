@@ -63,7 +63,7 @@ def iterateNames(network):
 	for i in keywords:
 		checkForName(i, network)
 	time = random.randint(1,100000)
-	# threading.Timer(time, threeLetterCombos).start()
+	# threading.Timer(time, iterateNames(network)).start()
 
 # execute on -3 or some other ones on flags
 iterateNames('twitter')
