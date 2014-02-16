@@ -13,10 +13,6 @@ account_sid = ""
 auth_token  = ""
 client = TwilioRestClient(account_sid, auth_token)
 
-x = 3 # here's where you want that user input or the flags or something
-numbers = [''.join(i) for i in product(['1','2','3','4','5','6','7','8','9','0'], repeat = x)]
-keywords = [''.join(i) for i in product(ascii_lowercase, repeat = x)]
-
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -59,13 +55,33 @@ def checkForName(username, network):
 	else:
 	    print bcolors.FAIL + 'Not available.' + bcolors.ENDC
 
-def iterateNames(network):
+def iterateNames(network, x):
+	# here's where you want that user input or the flags or something
+	numbers = [''.join(i) for i in product(['1','2','3','4','5','6','7','8','9','0'], repeat = x)]
+	keywords = [''.join(i) for i in product(ascii_lowercase, repeat = x)]
+
 	for i in keywords:
 		checkForName(i, network)
-	time = random.randint(1,100000)
-	# threading.Timer(time, iterateNames(network)).start()
+	client.messages.create(
+		to="",
+		from_="",
+		body="Just finished checking %d letter user names" % x
+	)
 
 # execute on -3 or some other ones on flags
-iterateNames('twitter')
-# checkForName('fdsjlflkdlsjfdlskf','twitter')
+def startUp(net):
+	for x in range(1, 4):
+		iterateNames(net, x)
+	time = random.randint(1,10)
+	threading.Timer(time, startUp).start()
+
+q = input(bcolors.OKGREEN + 'Program 1 or Program 2?: ' + bcolors.ENDC)
+if q == 1:
+	net = raw_input(bcolors.OKGREEN + 'Please enter a network to search (twitter or github): ' + bcolors.ENDC)
+	print net
+	startUp(net)
+elif q == 2:
+	name = raw_input(bcolors.OKGREEN + 'Please enter a username: ' + bcolors.ENDC)
+	net = raw_input(bcolors.OKGREEN + 'Please enter a network to search (twitter or github): ' + bcolors.ENDC)
+	checkForName(name, net)
 # ask for input of a username
