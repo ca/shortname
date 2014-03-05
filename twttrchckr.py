@@ -38,6 +38,9 @@ def checkForName(username, network):
 		url = "https://www.github.com/" + username
 	elif network == 'facebook':
 		url = "https://www.facebook.com/" + username
+		
+	elif network == 'instagram':
+		url = "https://www.instagram.com/" + username
 	else:
 		url = ''
 		# exit with error "Please enter a supported network!"
