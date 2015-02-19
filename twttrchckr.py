@@ -1,87 +1,62 @@
 #coding=utf-8
+import json
 import timeit
 import threading
 import random
-import urllib2
+# import urllib2
 import requests
+from flask import Flask, url_for, render_template
 from requests.exceptions import HTTPError
 from itertools import product
 from string import ascii_lowercase
-from twilio.rest import TwilioRestClient
+app = Flask(__name__)
 
-account_sid = ""
-auth_token  = ""
-client = TwilioRestClient(account_sid, auth_token)
-
-class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-
-    def disable(self):
-        self.HEADER = ''
-        self.OKBLUE = ''
-        self.OKGREEN = ''
-        self.WARNING = ''
-        self.FAIL = ''
-        self.ENDC = ''
+headers = {
+	'X-Parse-Application-Id': 'JmLQy3H9D7arbVcofNY2AVLhMpj2Xt1RxTSjeMhY',
+	'X-Parse-REST-API-Key': 'Uwcbhq8CyO9fIDUJtHt1R5z4GbfpzCbBcYSq3SCc',
+	'content-type': 'application/json'
+}
 
 def checkForName(username, network):
-	print "checking " + bcolors.WARNING + network + bcolors.ENDC + " for username: " + bcolors.OKBLUE + username + bcolors.ENDC + "..."
-
-	if network == 'twitter':
-		url = "https://www.twitter.com/" + username
-	elif network == 'github':
-		url = "https://www.github.com/" + username
-	elif network == 'facebook':
-		url = "https://www.facebook.com/" + username
-	else:
-		url = ''
-		# exit with error "Please enter a supported network!"
+	if network == 'twitter': url = "https://www.twitter.com/" + username
+	elif network == 'github': url = "https://www.github.com/" + username
+	elif network == 'facebook': url = "https://www.facebook.com/" + username
+	# elif network == 'tumblr': url = "https://" + username + ".tumblr.com"
+	else: url = ''
+	# exit with error "Please enter a supported network!"
 
 	try:
 	    r = requests.get(url)
 	    r.raise_for_status()
-	except HTTPError:
-		client.messages.create(
-			to="",
-			from_="",
-			body="Username available on " + network + "!: " + username
-		)
-		print bcolors.OKGREEN + 'GET THAT USERNAME' + bcolors.ENDC
-	else:
-	    print bcolors.FAIL + 'Not available.' + bcolors.ENDC
+	except HTTPError: return True
+	else: return False
+
+@app.route('/search/<username>')
+def search(username=None):
+	networks = ['twitter', 'github', 'facebook']#, 'tumblr']
+	for network in networks:
+		print network
+		if checkForName(username, network) == True: r = requests.post('https://api.parse.com/1/classes/ZSSUsername', data=json.dumps({'username': username,'network': network}), headers = headers)
+	return "processed successfully you asshole"
+
+
+# @app.route('/list/<network>')
+# def list(network=''):
+# 	startUp(network)
+# 	return "listed"
 
 def iterateNames(network, x):
-	# here's where you want that user input or the flags or something
-	numbers = [''.join(i) for i in product(['1','2','3','4','5','6','7','8','9','0'], repeat = x)]
 	keywords = [''.join(i) for i in product(ascii_lowercase, repeat = x)]
-
+	matches = []
 	for i in keywords:
-		checkForName(i, network)
-	client.messages.create(
-		to="",
-		from_="",
-		body="Just finished checking %d letter user names" % x
-	)
+		if checkForName(i, network) == True: r = requests.post('https://api.parse.com/1/classes/ZSSUsername', data=json.dumps({'username': i,'network': network}), headers = headers)
 
-# execute on -3 or some other ones on flags
 def startUp(net):
 	for x in range(1, 4):
 		iterateNames(net, x)
 	time = random.randint(1,10)
 	threading.Timer(time, startUp).start()
 
-q = input(bcolors.OKGREEN + 'Program 1 or Program 2?: ' + bcolors.ENDC)
-if q == 1:
-	net = raw_input(bcolors.OKGREEN + 'Please enter a network to search (twitter or github): ' + bcolors.ENDC)
-	print net
-	startUp(net)
-elif q == 2:
-	name = raw_input(bcolors.OKGREEN + 'Please enter a username: ' + bcolors.ENDC)
-	net = raw_input(bcolors.OKGREEN + 'Please enter a network to search (twitter or github): ' + bcolors.ENDC)
-	checkForName(name, net)
-# ask for input of a username
+if __name__ == '__main__':
+	app.run()
+    # app.run(host='0.0.0.0', port=80)
