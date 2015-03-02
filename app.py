@@ -20,7 +20,7 @@ def checkForName(username, network):
 	elif network == 'github': url = "https://www.github.com/" + username
 	elif network == 'facebook': url = "https://www.facebook.com/" + username
 	elif network == 'pinterest': url = "https://www.pinterest.com/" + username
-	# elif network == 'tumblr': url = "https://" + username + ".tumblr.com"
+	elif network == 'tumblr': url = "https://" + username + ".tumblr.com"
 	else: url = ''
 	# exit with error "Please enter a supported network!"
 
@@ -40,12 +40,12 @@ def iterateNames(network, x):
 		else: r = requests.post('https://api.parse.com/1/classes/ZSSUsername', data=json.dumps({'username': i,'network': network, 'available': False}), headers = headers)
 
 def startUp(net):
-	for x in range(1, 4):
+	for x in range(4, 5):
 		iterateNames(net, x)
 	time = random.randint(1,10)
 	threading.Timer(time, startUp).start()
 
 while (True):
-	networks = ['instagram', 'twitter', 'github', 'facebook', 'pinterest']#, 'tumblr']
+	networks = ['instagram', 'twitter', 'github', 'facebook', 'pinterest', 'tumblr']
 	for network in networks:
 		startUp(network)
